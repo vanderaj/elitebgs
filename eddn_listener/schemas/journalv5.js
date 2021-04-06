@@ -677,6 +677,9 @@ function Journal() {
             message.event &&
             message.SystemGovernment
         ) {
+            if (message.StarSystem === "Adityan") {
+                throw new Error("Adityan is being blocked");
+            }
             if (!message.SystemFaction.FactionState) {
                 message.SystemFaction.FactionState = "None";
             }
@@ -703,6 +706,12 @@ function Journal() {
             });
             if (!pass) {
                 throw new Error("Message from old version " + header.softwareVersion + " software " + header.softwareName);
+            }
+            if (configRecord.whitelisted_software.findIndex(software => {
+                let regexp = new RegExp(software, "i");
+                return regexp.test(header.softwareName);
+            }) === -1) {
+                throw new Error("Message not from whitelisted software " + header.softwareName);
             }
             let messageTimestamp = new Date(message.timestamp);
             let oldestTimestamp = new Date("2017-10-07T00:00:00Z");
@@ -733,6 +742,9 @@ function Journal() {
             message.StationServices &&
             message.StationType
         ) {
+            if (message.StarSystem === "Adityan") {
+                throw new Error("Adityan is being blocked");
+            }
             if (message.StationType === "FleetCarrier") {
                 throw new Error("Message from Fleet Carrier");
             }
@@ -768,6 +780,12 @@ function Journal() {
             });
             if (!pass) {
                 throw new Error("Message from old version " + header.softwareVersion + " software " + header.softwareName);
+            }
+            if (configRecord.whitelisted_software.findIndex(software => {
+                let regexp = new RegExp(software, "i");
+                return regexp.test(header.softwareName);
+            }) === -1) {
+                throw new Error("Message not from whitelisted software " + header.softwareName);
             }
             let messageTimestamp = new Date(message.timestamp);
             let oldestTimestamp = new Date("2017-10-07T00:00:00Z");
